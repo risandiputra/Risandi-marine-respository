@@ -350,7 +350,7 @@ function initEvidenceVault() {
 async function handleDriveUpload(event) {
   event.preventDefault();
   const form = event.currentTarget;
-  const file = form.evidenceFile?.files?.[0];
+  const file = form.elements.evidenceFile?.files?.[0];
   if (!file) {
     setUploadMessage('Pilih file dokumen terlebih dahulu.', 'error');
     return;
@@ -364,43 +364,52 @@ async function handleDriveUpload(event) {
     return;
   }
 
-  const itemKey = form.itemKey.value || makeEvidenceKey(form.category.value, form.documentTitle.value);
+  const category = form.elements.category.value;
+  const documentTitle = form.elements.documentTitle.value;
+  const itemKey = form.elements.itemKey.value || findChecklistKey(category, documentTitle) || makeEvidenceKey(category, documentTitle);
+  const year = String(form.elements.year.value || new Date().getFullYear());
   setUploadMessage('Membaca file dan mengirim ke Google Drive...', 'success');
 
   try {
     const base64 = await readFileAsBase64(file);
-    postToAppsScript({
-      accessCode: form.accessCode.value,
-      category: form.category.value,
-      categoryLabel: evidenceCategories[form.category.value]?.label || form.category.value,
-      folderName: evidenceCategories[form.category.value]?.folder || form.category.value,
+    const response = await postToAppsScript({
+      accessCode: form.elements.accessCode.value,
+      category,
+      categoryLabel: evidenceCategories[category]?.label || category,
+      folderName: evidenceCategories[category]?.folder || category,
       itemKey,
-      documentTitle: form.documentTitle.value,
-      year: form.year.value,
-      documentStatus: form.documentStatus.value,
-      role: form.role.value,
-      output: form.output.value,
+      documentTitle,
+      year,
+      documentStatus: form.elements.documentStatus.value,
+      role: form.elements.role.value,
+      output: form.elements.output.value,
       fileName: file.name,
       mimeType: file.type || 'application/octet-stream',
       fileBase64: base64
     });
 
+    if (!response?.success) {
+      throw new Error(response?.message || 'Upload ditolak oleh Apps Script.');
+    }
+
     const local = getLocalUploadedEvidence();
     local[itemKey] = {
-      fileName: file.name,
-      year: form.year.value,
-      category: form.category.value,
-      uploadedAt: new Date().toISOString(),
-      url: ''
+      fileName: response.fileName || file.name,
+      year: response.metadata?.year || year,
+      category: response.metadata?.category || category,
+      uploadedAt: response.metadata?.uploadedAt || new Date().toISOString(),
+      url: response.url || ''
     };
     saveLocalUploadedEvidence(local);
     hydrateUploadedMap();
     renderEvidenceTable();
-    setUploadMessage('Permintaan upload dikirim. Tunggu beberapa detik, lalu klik Refresh Status untuk sinkronisasi Google Drive.', 'success');
+    setUploadMessage('Upload berhasil. Checklist sudah diperbarui dan file tersimpan di Google Drive.', 'success');
     form.reset();
-    form.year.value = new Date().getFullYear();
+    form.elements.year.value = new Date().getFullYear();
+    form.elements.itemKey.value = '';
+    setTimeout(() => refreshDriveStatus(), 1500);
   } catch (error) {
-    setUploadMessage(`Upload gagal diproses: ${error.message}`, 'error');
+    setUploadMessage(`Upload gagal: ${error.message}`, 'error');
   }
 }
 
@@ -414,32 +423,53 @@ function readFileAsBase64(file) {
 }
 
 function postToAppsScript(payload) {
-  const iframeName = 'drive-upload-frame';
-  let iframe = document.querySelector(`iframe[name="${iframeName}"]`);
-  if (!iframe) {
-    iframe = document.createElement('iframe');
+  return new Promise((resolve, reject) => {
+    const requestId = `upload_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const iframeName = `drive-upload-frame-${requestId}`;
+    const iframe = document.createElement('iframe');
     iframe.name = iframeName;
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
-  }
 
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = GOOGLE_DRIVE_WEB_APP_URL;
-  form.target = iframeName;
-  form.style.display = 'none';
+    const cleanup = () => {
+      window.removeEventListener('message', onMessage);
+      form.remove();
+      setTimeout(() => iframe.remove(), 500);
+      clearTimeout(timeout);
+    };
 
-  Object.entries(payload).forEach(([key, value]) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = value ?? '';
-    form.appendChild(input);
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('Tidak ada respons dari Apps Script. Pastikan Code.gs sudah memakai versi terbaru dan sudah di-deploy ulang.'));
+    }, 45000);
+
+    const onMessage = (event) => {
+      const data = event.data || {};
+      if (data.source !== 'risandi-drive-upload') return;
+      if (data.requestId && data.requestId !== requestId) return;
+      cleanup();
+      resolve(data.payload || data);
+    };
+
+    window.addEventListener('message', onMessage);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GOOGLE_DRIVE_WEB_APP_URL;
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    Object.entries({ ...payload, requestId }).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value ?? '';
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
   });
-
-  document.body.appendChild(form);
-  form.submit();
-  setTimeout(() => form.remove(), 1000);
 }
 
 function refreshDriveStatus() {
@@ -456,8 +486,9 @@ function refreshDriveStatus() {
       if (response?.success && Array.isArray(response.files)) {
         const local = getLocalUploadedEvidence();
         response.files.forEach(file => {
-          if (file.itemKey) {
-            local[file.itemKey] = {
+          const inferredKey = file.itemKey || findChecklistKey(file.category, file.documentTitle);
+          if (inferredKey) {
+            local[inferredKey] = {
               fileName: file.name,
               year: file.year || '',
               category: file.category || '',
@@ -491,6 +522,12 @@ function refreshDriveStatus() {
     script.remove();
   };
   document.body.appendChild(script);
+}
+
+function findChecklistKey(category, title) {
+  const normalized = String(title || '').trim().toLowerCase();
+  const item = evidenceChecklist.find(row => row.category === category && row.title.trim().toLowerCase() === normalized);
+  return item?.key || '';
 }
 
 function makeEvidenceKey(category, title) {

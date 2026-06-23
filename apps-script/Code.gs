@@ -1,18 +1,11 @@
 /**
  * Google Apps Script Web App untuk Arsip Kinerja Akademik & Bukti Portofolio Dosen.
- *
- * Cara pakai singkat:
- * 1) Buka script.google.com > New project.
- * 2) Paste seluruh isi file ini ke Code.gs.
- * 3) Ganti UPLOAD_PIN dengan kode akses rahasia.
- * 4) Deploy > New deployment > Web app.
- * 5) Execute as: Me.
- * 6) Who has access: Anyone with the link.
- * 7) Copy Web App URL dan paste ke script.js pada variabel GOOGLE_DRIVE_WEB_APP_URL.
+ * Versi ini mengirim respons upload kembali ke website melalui postMessage,
+ * sehingga checklist website bisa berubah otomatis setelah upload berhasil.
  */
 
 const ROOT_FOLDER_ID = '1vip7Umt05FHs7W9imowff_joqUNXGAmI';
-const UPLOAD_PIN = 'GANTI_PIN_RAHASIA';
+const UPLOAD_PIN = 'KeenanKenzie';
 
 const CATEGORY_FOLDERS = {
   pendidikan: '01 Pendidikan dan Pengajaran',
@@ -31,6 +24,7 @@ function doGet(e) {
 
   try {
     ensureMainFolders_();
+
     if (action === 'list') {
       payload = {
         success: true,
@@ -56,12 +50,16 @@ function doGet(e) {
 
 function doPost(e) {
   let payload;
+  let requestId = '';
 
   try {
     const p = e.parameter || {};
+    requestId = p.requestId || '';
+
     if (!p.accessCode || p.accessCode !== UPLOAD_PIN) {
       throw new Error('Kode akses tidak valid. Upload ditolak.');
     }
+
     if (!p.fileBase64 || !p.fileName) {
       throw new Error('File tidak ditemukan dalam payload.');
     }
@@ -71,6 +69,7 @@ function doPost(e) {
     const category = p.category || 'pendukung';
     const categoryFolderName = CATEGORY_FOLDERS[category] || sanitizeText_(p.folderName || '07 Dokumen Pendukung');
     const year = sanitizeText_(p.year || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy'));
+
     const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
     const categoryFolder = getOrCreateFolder_(root, categoryFolderName);
     const yearFolder = getOrCreateFolder_(categoryFolder, year);
@@ -97,6 +96,7 @@ function doPost(e) {
       uploadedAt: new Date().toISOString(),
       source: 'Risandi Portfolio Website'
     };
+
     file.setDescription(JSON.stringify(metadata));
 
     payload = {
@@ -114,20 +114,40 @@ function doPost(e) {
     };
   }
 
-  return output_(payload, null);
+  return uploadOutput_(payload, requestId);
 }
 
 function output_(payload, callback) {
   const text = callback
     ? `${callback}(${JSON.stringify(payload)});`
     : JSON.stringify(payload);
+
   return ContentService
     .createTextOutput(text)
     .setMimeType(callback ? ContentService.MimeType.JAVASCRIPT : ContentService.MimeType.JSON);
 }
 
+function uploadOutput_(payload, requestId) {
+  const message = {
+    source: 'risandi-drive-upload',
+    requestId: requestId || '',
+    payload: payload
+  };
+
+  const html = `<!doctype html><html><body>
+    <script>
+      window.parent.postMessage(${JSON.stringify(message)}, '*');
+    </script>
+    <pre>${escapeHtml_(JSON.stringify(payload, null, 2))}</pre>
+  </body></html>`;
+
+  return HtmlService.createHtmlOutput(html)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
 function ensureMainFolders_() {
   const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
+
   Object.keys(CATEGORY_FOLDERS).forEach(function(key) {
     getOrCreateFolder_(root, CATEGORY_FOLDERS[key]);
   });
@@ -135,14 +155,20 @@ function ensureMainFolders_() {
 
 function getOrCreateFolder_(parent, name) {
   const folders = parent.getFoldersByName(name);
-  if (folders.hasNext()) return folders.next();
+
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+
   return parent.createFolder(name);
 }
 
 function listPortfolioFiles_() {
   const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
   const files = [];
+
   scanFolder_(root, files, []);
+
   return files;
 }
 
@@ -153,9 +179,12 @@ function scanFolder_(folder, files, path) {
   while (fileIterator.hasNext()) {
     const file = fileIterator.next();
     let meta = {};
+
     try {
       const desc = file.getDescription();
-      if (desc) meta = JSON.parse(desc);
+      if (desc) {
+        meta = JSON.parse(desc);
+      }
     } catch (error) {
       meta = {};
     }
@@ -181,6 +210,7 @@ function scanFolder_(folder, files, path) {
   }
 
   const folderIterator = folder.getFolders();
+
   while (folderIterator.hasNext()) {
     scanFolder_(folderIterator.next(), files, folderPath);
   }
@@ -200,4 +230,18 @@ function sanitizeFileName_(value) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 140) || 'dokumen';
+}
+
+function escapeHtml_(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function testSetup() {
+  ensureMainFolders_();
+  Logger.log('OK: Folder Google Drive berhasil diakses dan folder kategori siap.');
 }
