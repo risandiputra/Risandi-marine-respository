@@ -140,40 +140,7 @@ document.addEventListener('keydown', event => {
 });
 
 
-// ===== Enhancement v9: Infografis Science =====
-const infographicItems = [
-  {
-    category: 'Oseanografi',
-    title: 'Variasi Musiman Arus Permukaan di Estuari Kawal',
-    body: 'Konsep infografis ini merangkum bagaimana arus permukaan estuari berubah secara musiman, mengapa pola hidrodinamika penting untuk ekosistem pesisir, dan bagaimana informasi tersebut dapat digunakan untuk mendukung pengelolaan wilayah pesisir Bintan.'
-  },
-  {
-    category: 'Terumbu Karang',
-    title: 'Chaetodontidae sebagai Indikator Kesehatan Terumbu',
-    body: 'Infografis ini menjelaskan peran ikan kepe-kepe sebagai indikator ekologis, hubungan kelimpahannya dengan tutupan karang hidup, dan pesan konservasi yang dapat disampaikan kepada masyarakat serta pengelola kawasan.'
-  },
-  {
-    category: 'Ikan Karang',
-    title: 'Dinamika Ikan Karang, Karang, dan Turf Algae di Biak',
-    body: 'Konsep visual ini memperlihatkan keterkaitan antara komunitas ikan karang, tutupan karang, dan turf algae sehingga pembaca dapat memahami dinamika habitat terumbu secara cepat.'
-  },
-  {
-    category: 'Resiliensi Ekosistem',
-    title: 'Resiliensi Ikan Karang Pasca Gempa di Kepulauan Nias',
-    body: 'Infografis ini mengubah riset pascagangguan menjadi alur visual tentang tekanan lingkungan, respons habitat, komunitas ikan karang, dan pentingnya monitoring berkelanjutan setelah bencana.'
-  },
-  {
-    category: 'Rekrutmen Karang',
-    title: 'Sebaran Karang Muda dan Potensi Pemulihan Terumbu',
-    body: 'Infografis ini menyoroti juvenile coral sebagai indikator regenerasi terumbu, dengan fokus pada distribusi spasial dan potensi pemulihan ekosistem pesisir dan pulau-pulau kecil.'
-  },
-  {
-    category: 'Monitoring Terumbu',
-    title: 'Coral Reef Health Index untuk Pengelolaan Terumbu Pengudang',
-    body: 'Konsep infografis ini menyederhanakan indeks kesehatan terumbu menjadi pesan visual untuk monitoring, edukasi, dan pengambilan keputusan berbasis bukti.'
-  }
-];
-
+// ===== Enhancement v11: Infografis Science filters only =====
 document.querySelectorAll('.science-filter').forEach(button => {
   button.addEventListener('click', () => {
     document.querySelectorAll('.science-filter').forEach(el => el.classList.remove('active'));
@@ -184,29 +151,5 @@ document.querySelectorAll('.science-filter').forEach(button => {
       const visible = filter === 'all' || categories.includes(filter);
       card.style.display = visible ? '' : 'none';
     });
-  });
-});
-
-document.querySelectorAll('.infographic-card').forEach(card => {
-  card.addEventListener('click', event => {
-    if (event.target.closest('a')) return;
-    const item = infographicItems[Number(card.dataset.infographic)];
-    if (!item || !modal) return;
-    lastFocusedElement = document.activeElement;
-    modalCategory.textContent = item.category;
-    modalTitle.textContent = item.title;
-    modalBody.textContent = item.body;
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    modal.querySelector('.modal-close')?.focus();
-  });
-  card.setAttribute('tabindex', '0');
-  card.setAttribute('role', 'button');
-  card.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      card.click();
-    }
   });
 });
