@@ -139,406 +139,74 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && modal?.classList.contains('open')) closeModal();
 });
 
-// ===== Enhancement v4: Google Drive Evidence Vault =====
-// Setelah Google Apps Script Web App dibuat, paste URL Web App di sini.
-const GOOGLE_DRIVE_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwdEPJtxSNQSys0MuIeVjAwSKMGyRRrCGfpmUxIQ3C5kjbwJtr-Hq4deMWlTV445YOQ/exec';
-const GOOGLE_DRIVE_ROOT_FOLDER_ID = '1vip7Umt05FHs7W9imowff_joqUNXGAmI';
 
-const evidenceCategories = {
-  pendidikan: { label: 'Pendidikan & Pengajaran', icon: '🎓', folder: '01 Pendidikan dan Pengajaran' },
-  penelitian: { label: 'Penelitian & Publikasi', icon: '🔬', folder: '02 Penelitian dan Publikasi' },
-  pengabdian: { label: 'Pengabdian kepada Masyarakat', icon: '🤝', folder: '03 Pengabdian kepada Masyarakat' },
-  penunjang: { label: 'Penunjang Akademik', icon: '📌', folder: '04 Penunjang Akademik' },
-  rekognisi: { label: 'Rekognisi & Prestasi', icon: '🏅', folder: '05 Rekognisi dan Prestasi' },
-  hki: { label: 'HKI, Buku & Luaran Tambahan', icon: '📚', folder: '06 HKI Buku dan Luaran Tambahan' },
-  pendukung: { label: 'Dokumen Pendukung', icon: '🗂️', folder: '07 Dokumen Pendukung' }
-};
-
-const evidenceChecklist = [
-  { key: 'pendidikan-sk-mengajar', category: 'pendidikan', title: 'SK Mengajar / Surat Tugas Mengajar', year: '2026', meta: 'Dokumen dasar pelaksanaan pendidikan dan pengajaran.' },
-  { key: 'pendidikan-rps', category: 'pendidikan', title: 'RPS / Rencana Pembelajaran Semester', year: '2026', meta: 'Rencana pembelajaran, CPMK, materi, metode, dan evaluasi.' },
-  { key: 'pendidikan-bahan-ajar', category: 'pendidikan', title: 'Bahan Ajar / Modul / Slide Kuliah', year: '2026', meta: 'Materi pembelajaran yang digunakan pada mata kuliah.' },
-  { key: 'pendidikan-pembimbingan', category: 'pendidikan', title: 'Bukti Pembimbingan Mahasiswa', year: '2026', meta: 'Pembimbing skripsi, tugas akhir, kerja praktik, atau riset mahasiswa.' },
-  { key: 'pendidikan-penguji', category: 'pendidikan', title: 'Bukti Penguji / Seminar Akademik', year: '2026', meta: 'Berita acara, surat tugas, undangan, atau sertifikat penguji.' },
-  { key: 'pendidikan-inovasi', category: 'pendidikan', title: 'Inovasi Pembelajaran / Praktikum', year: '2026', meta: 'Pengembangan metode, praktikum, instrumen, atau rubrik.' },
-
-  { key: 'penelitian-artikel-jurnal', category: 'penelitian', title: 'Artikel Jurnal Ilmiah', year: '2026', meta: 'Artikel SINTA, Scopus, WoS, nasional, atau internasional.' },
-  { key: 'penelitian-prosiding', category: 'penelitian', title: 'Prosiding Seminar / Konferensi', year: '2026', meta: 'Makalah konferensi, prosiding, sertifikat presenter.' },
-  { key: 'penelitian-hibah', category: 'penelitian', title: 'SK / Kontrak Hibah Penelitian', year: '2026', meta: 'Dokumen hibah, kontrak, surat keputusan, atau penugasan.' },
-  { key: 'penelitian-laporan', category: 'penelitian', title: 'Laporan Penelitian', year: '2026', meta: 'Laporan akhir, laporan kemajuan, logbook, atau data pendukung.' },
-  { key: 'penelitian-dataset', category: 'penelitian', title: 'Dataset / Kode Analisis / Output Model', year: '2026', meta: 'Dataset riset, script, peta, model, atau visualisasi ilmiah.' },
-  { key: 'penelitian-kolaborasi', category: 'penelitian', title: 'Bukti Kolaborasi Riset', year: '2026', meta: 'MoU, surat undangan, email resmi, atau dokumen kerja sama.' },
-
-  { key: 'pengabdian-sk', category: 'pengabdian', title: 'SK / Surat Tugas Pengabdian', year: '2026', meta: 'Bukti penugasan kegiatan pengabdian kepada masyarakat.' },
-  { key: 'pengabdian-laporan', category: 'pengabdian', title: 'Laporan Pengabdian kepada Masyarakat', year: '2026', meta: 'Laporan kegiatan, capaian, sasaran, dan luaran pengabdian.' },
-  { key: 'pengabdian-dokumentasi', category: 'pengabdian', title: 'Dokumentasi Kegiatan Pengabdian', year: '2026', meta: 'Foto, daftar hadir, berita acara, dan dokumentasi lapangan.' },
-  { key: 'pengabdian-sertifikat', category: 'pengabdian', title: 'Sertifikat / Surat Keterangan Pengabdian', year: '2026', meta: 'Sertifikat narasumber, pendamping, atau pelaksana kegiatan.' },
-  { key: 'pengabdian-luaran', category: 'pengabdian', title: 'Luaran Pengabdian / Media / Modul', year: '2026', meta: 'Modul, artikel populer, media coverage, atau policy brief.' },
-
-  { key: 'penunjang-seminar', category: 'penunjang', title: 'Sertifikat Seminar / Workshop / Pelatihan', year: '2026', meta: 'Sertifikat sebagai peserta, pembicara, moderator, atau panitia.' },
-  { key: 'penunjang-reviewer', category: 'penunjang', title: 'Reviewer Jurnal / Editor / Dewan Redaksi', year: '2026', meta: 'Bukti reviewer, editor, editorial board, atau peer-review.' },
-  { key: 'penunjang-narasumber', category: 'penunjang', title: 'Narasumber / Moderator / Fasilitator', year: '2026', meta: 'Surat undangan, sertifikat, atau surat tugas kegiatan.' },
-  { key: 'penunjang-organisasi', category: 'penunjang', title: 'Organisasi Profesi / Kepanitiaan Akademik', year: '2026', meta: 'SK organisasi, kepanitiaan, atau kontribusi institusional.' },
-  { key: 'penunjang-surat-tugas', category: 'penunjang', title: 'Surat Tugas Penunjang Akademik', year: '2026', meta: 'Penugasan internal/eksternal yang mendukung kinerja dosen.' },
-
-  { key: 'rekognisi-penghargaan', category: 'rekognisi', title: 'Penghargaan / Prestasi Akademik', year: '2026', meta: 'Penghargaan, rekognisi, atau capaian profesional.' },
-  { key: 'rekognisi-invited-speaker', category: 'rekognisi', title: 'Invited Speaker / Keynote / Visiting Lecturer', year: '2026', meta: 'Undangan dan bukti kontribusi pada forum akademik.' },
-  { key: 'rekognisi-sitasi', category: 'rekognisi', title: 'Bukti Sitasi / H-Index / Metrik Akademik', year: '2026', meta: 'Tangkapan layar atau rekap metrik Scholar, SINTA, Scopus.' },
-  { key: 'rekognisi-media', category: 'rekognisi', title: 'Media Coverage / Publikasi Populer', year: '2026', meta: 'Liputan media, artikel populer, podcast, atau wawancara.' },
-
-  { key: 'hki-hak-cipta', category: 'hki', title: 'Hak Cipta / HKI', year: '2026', meta: 'Sertifikat hak cipta, paten, atau kekayaan intelektual.' },
-  { key: 'hki-buku', category: 'hki', title: 'Buku / Monograf / Book Chapter', year: '2026', meta: 'Buku ajar, referensi, monograf, atau chapter akademik.' },
-  { key: 'hki-panduan', category: 'hki', title: 'Panduan Teknis / Policy Brief / Produk Riset', year: '2026', meta: 'Luaran tambahan berbasis riset dan diseminasi ilmiah.' },
-  { key: 'hki-software', category: 'hki', title: 'Software / Model / Perangkat Analisis', year: '2026', meta: 'Aplikasi, model, script, atau alat bantu analisis data.' },
-
-  { key: 'pendukung-cv', category: 'pendukung', title: 'CV Akademik Terbaru', year: '2026', meta: 'Curriculum vitae akademik untuk kebutuhan portofolio.' },
-  { key: 'pendukung-sk-jabatan', category: 'pendukung', title: 'SK Jabatan Akademik / SK Pangkat', year: '2026', meta: 'Dokumen pendukung karier dan jabatan akademik.' },
-  { key: 'pendukung-sertifikat-pendidik', category: 'pendukung', title: 'Sertifikat Pendidik / Dokumen Profesional', year: '2026', meta: 'Sertifikat pendidik atau dokumen profesi terkait.' },
-  { key: 'pendukung-bkd', category: 'pendukung', title: 'BKD / LKD / Rekap Kinerja Dosen', year: '2026', meta: 'Rekap beban kerja dosen dan laporan kinerja.' },
-  { key: 'pendukung-sister', category: 'pendukung', title: 'SISTER / SINTA / Scopus Supporting Evidence', year: '2026', meta: 'Tangkapan layar, rekap data, dan bukti pendukung database.' }
+// ===== Enhancement v9: Infografis Science =====
+const infographicItems = [
+  {
+    category: 'Oseanografi',
+    title: 'Variasi Musiman Arus Permukaan di Estuari Kawal',
+    body: 'Konsep infografis ini merangkum bagaimana arus permukaan estuari berubah secara musiman, mengapa pola hidrodinamika penting untuk ekosistem pesisir, dan bagaimana informasi tersebut dapat digunakan untuk mendukung pengelolaan wilayah pesisir Bintan.'
+  },
+  {
+    category: 'Terumbu Karang',
+    title: 'Chaetodontidae sebagai Indikator Kesehatan Terumbu',
+    body: 'Infografis ini menjelaskan peran ikan kepe-kepe sebagai indikator ekologis, hubungan kelimpahannya dengan tutupan karang hidup, dan pesan konservasi yang dapat disampaikan kepada masyarakat serta pengelola kawasan.'
+  },
+  {
+    category: 'Ikan Karang',
+    title: 'Dinamika Ikan Karang, Karang, dan Turf Algae di Biak',
+    body: 'Konsep visual ini memperlihatkan keterkaitan antara komunitas ikan karang, tutupan karang, dan turf algae sehingga pembaca dapat memahami dinamika habitat terumbu secara cepat.'
+  },
+  {
+    category: 'Resiliensi Ekosistem',
+    title: 'Resiliensi Ikan Karang Pasca Gempa di Kepulauan Nias',
+    body: 'Infografis ini mengubah riset pascagangguan menjadi alur visual tentang tekanan lingkungan, respons habitat, komunitas ikan karang, dan pentingnya monitoring berkelanjutan setelah bencana.'
+  },
+  {
+    category: 'Rekrutmen Karang',
+    title: 'Sebaran Karang Muda dan Potensi Pemulihan Terumbu',
+    body: 'Infografis ini menyoroti juvenile coral sebagai indikator regenerasi terumbu, dengan fokus pada distribusi spasial dan potensi pemulihan ekosistem pesisir dan pulau-pulau kecil.'
+  },
+  {
+    category: 'Monitoring Terumbu',
+    title: 'Coral Reef Health Index untuk Pengelolaan Terumbu Pengudang',
+    body: 'Konsep infografis ini menyederhanakan indeks kesehatan terumbu menjadi pesan visual untuk monitoring, edukasi, dan pengambilan keputusan berbasis bukti.'
+  }
 ];
 
-const evidenceState = {
-  activeCategory: 'all',
-  query: '',
-  year: 'all',
-  uploaded: new Map()
-};
-
-function getLocalUploadedEvidence() {
-  try {
-    const raw = localStorage.getItem('risandiEvidenceUploaded') || '{}';
-    return JSON.parse(raw);
-  } catch (_) {
-    return {};
-  }
-}
-
-function saveLocalUploadedEvidence(data) {
-  localStorage.setItem('risandiEvidenceUploaded', JSON.stringify(data));
-}
-
-function hydrateUploadedMap() {
-  evidenceState.uploaded.clear();
-  const local = getLocalUploadedEvidence();
-  Object.entries(local).forEach(([key, value]) => evidenceState.uploaded.set(key, value));
-}
-
-function setUploadMessage(message, type = '') {
-  const el = document.querySelector('#upload-message');
-  if (!el) return;
-  el.textContent = message;
-  el.classList.remove('error', 'success');
-  if (type) el.classList.add(type);
-}
-
-function renderEvidenceTable() {
-  const tbody = document.querySelector('#evidence-table-body');
-  if (!tbody) return;
-
-  const filtered = evidenceChecklist.filter(item => {
-    const categoryMatch = evidenceState.activeCategory === 'all' || item.category === evidenceState.activeCategory;
-    const yearMatch = evidenceState.year === 'all' || item.year === evidenceState.year;
-    const q = evidenceState.query.toLowerCase().trim();
-    const text = `${item.title} ${item.meta} ${evidenceCategories[item.category]?.label || ''}`.toLowerCase();
-    return categoryMatch && yearMatch && (!q || text.includes(q));
-  });
-
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="5">Tidak ada dokumen yang cocok dengan filter.</td></tr>';
-    updateEvidenceCounters();
-    return;
-  }
-
-  tbody.innerHTML = filtered.map(item => {
-    const cat = evidenceCategories[item.category];
-    const uploaded = evidenceState.uploaded.get(item.key);
-    const status = uploaded
-      ? '<span class="status-pill uploaded">✓ Sudah diupload</span>'
-      : '<span class="status-pill pending">○ Belum diupload</span>';
-    const driveLink = uploaded?.url
-      ? `<a href="${uploaded.url}" target="_blank" rel="noopener">Buka Drive</a>`
-      : '';
-    return `
-      <tr>
-        <td><span class="category-chip">${cat.icon} ${cat.label}</span></td>
-        <td><span class="doc-title">${item.title}</span><span class="doc-meta">${item.meta}${uploaded?.fileName ? `<br>File: ${uploaded.fileName}` : ''}</span></td>
-        <td>${uploaded?.year || item.year}</td>
-        <td>${status}</td>
-        <td><div class="row-actions"><button type="button" data-upload-for="${item.key}">Upload</button>${driveLink}</div></td>
-      </tr>`;
-  }).join('');
-
-  document.querySelectorAll('[data-upload-for]').forEach(btn => {
-    btn.addEventListener('click', () => prefillUploadForm(btn.dataset.uploadFor));
-  });
-
-  updateEvidenceCounters();
-}
-
-function updateEvidenceCounters() {
-  const total = evidenceChecklist.length;
-  const uploadedCount = evidenceChecklist.filter(item => evidenceState.uploaded.has(item.key)).length;
-  const pending = total - uploadedCount;
-  const totalEl = document.querySelector('#evidence-total');
-  const uploadedEl = document.querySelector('#evidence-uploaded');
-  const pendingEl = document.querySelector('#evidence-pending');
-  const statusEl = document.querySelector('#drive-status');
-  if (totalEl) totalEl.textContent = total;
-  if (uploadedEl) uploadedEl.textContent = uploadedCount;
-  if (pendingEl) pendingEl.textContent = pending;
-  if (statusEl) statusEl.textContent = GOOGLE_DRIVE_WEB_APP_URL ? 'Aktif' : 'Setup';
-}
-
-function prefillUploadForm(itemKey) {
-  const item = evidenceChecklist.find(row => row.key === itemKey);
-  const form = document.querySelector('#drive-upload-form');
-  if (!item || !form) return;
-  form.category.value = item.category;
-  form.documentTitle.value = item.title;
-  form.year.value = item.year;
-  form.itemKey.value = item.key;
-  form.output.value = item.title.split('/')[0].trim();
-  document.querySelector('#upload-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  form.evidenceFile?.focus?.();
-  setUploadMessage(`Siap upload untuk: ${item.title}`, 'success');
-}
-
-function initEvidenceVault() {
-  hydrateUploadedMap();
-  renderEvidenceTable();
-
-  document.querySelectorAll('.vault-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.vault-tab').forEach(el => el.classList.remove('active'));
-      tab.classList.add('active');
-      evidenceState.activeCategory = tab.dataset.category || 'all';
-      renderEvidenceTable();
+document.querySelectorAll('.science-filter').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.science-filter').forEach(el => el.classList.remove('active'));
+    button.classList.add('active');
+    const filter = button.dataset.scienceFilter || 'all';
+    document.querySelectorAll('.infographic-card').forEach(card => {
+      const categories = card.dataset.scienceCategory || '';
+      const visible = filter === 'all' || categories.includes(filter);
+      card.style.display = visible ? '' : 'none';
     });
   });
+});
 
-  document.querySelector('#evidence-search')?.addEventListener('input', event => {
-    evidenceState.query = event.target.value || '';
-    renderEvidenceTable();
+document.querySelectorAll('.infographic-card').forEach(card => {
+  card.addEventListener('click', event => {
+    if (event.target.closest('a')) return;
+    const item = infographicItems[Number(card.dataset.infographic)];
+    if (!item || !modal) return;
+    lastFocusedElement = document.activeElement;
+    modalCategory.textContent = item.category;
+    modalTitle.textContent = item.title;
+    modalBody.textContent = item.body;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.modal-close')?.focus();
   });
-
-  document.querySelector('#evidence-year-filter')?.addEventListener('change', event => {
-    evidenceState.year = event.target.value || 'all';
-    renderEvidenceTable();
-  });
-
-  document.querySelector('[data-open-upload]')?.addEventListener('click', () => {
-    document.querySelector('#upload-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  document.querySelector('[data-refresh-drive]')?.addEventListener('click', () => refreshDriveStatus());
-
-  document.querySelector('[data-copy-folder-id]')?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(GOOGLE_DRIVE_ROOT_FOLDER_ID);
-      setUploadMessage('Folder ID Google Drive berhasil disalin.', 'success');
-    } catch (_) {
-      setUploadMessage(`Folder ID: ${GOOGLE_DRIVE_ROOT_FOLDER_ID}`, 'success');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('role', 'button');
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      card.click();
     }
   });
-
-  document.querySelector('#drive-upload-form')?.addEventListener('submit', handleDriveUpload);
-
-  if (GOOGLE_DRIVE_WEB_APP_URL) refreshDriveStatus();
-}
-
-async function handleDriveUpload(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const file = form.elements.evidenceFile?.files?.[0];
-  if (!file) {
-    setUploadMessage('Pilih file dokumen terlebih dahulu.', 'error');
-    return;
-  }
-  if (file.size > 12 * 1024 * 1024) {
-    setUploadMessage('Ukuran file disarankan maksimal 12 MB untuk upload via Apps Script. Kompres PDF/ZIP jika perlu.', 'error');
-    return;
-  }
-  if (!GOOGLE_DRIVE_WEB_APP_URL) {
-    setUploadMessage('Integrasi belum aktif. Buat Google Apps Script Web App, lalu paste URL-nya di script.js pada variabel GOOGLE_DRIVE_WEB_APP_URL.', 'error');
-    return;
-  }
-
-  const category = form.elements.category.value;
-  const documentTitle = form.elements.documentTitle.value;
-  const itemKey = form.elements.itemKey.value || findChecklistKey(category, documentTitle) || makeEvidenceKey(category, documentTitle);
-  const year = String(form.elements.year.value || new Date().getFullYear());
-  setUploadMessage('Membaca file dan mengirim ke Google Drive...', 'success');
-
-  try {
-    const base64 = await readFileAsBase64(file);
-    const response = await postToAppsScript({
-      accessCode: form.elements.accessCode.value,
-      category,
-      categoryLabel: evidenceCategories[category]?.label || category,
-      folderName: evidenceCategories[category]?.folder || category,
-      itemKey,
-      documentTitle,
-      year,
-      documentStatus: form.elements.documentStatus.value,
-      role: form.elements.role.value,
-      output: form.elements.output.value,
-      fileName: file.name,
-      mimeType: file.type || 'application/octet-stream',
-      fileBase64: base64
-    });
-
-    if (!response?.success) {
-      throw new Error(response?.message || 'Upload ditolak oleh Apps Script.');
-    }
-
-    const local = getLocalUploadedEvidence();
-    local[itemKey] = {
-      fileName: response.fileName || file.name,
-      year: response.metadata?.year || year,
-      category: response.metadata?.category || category,
-      uploadedAt: response.metadata?.uploadedAt || new Date().toISOString(),
-      url: response.url || ''
-    };
-    saveLocalUploadedEvidence(local);
-    hydrateUploadedMap();
-    renderEvidenceTable();
-    setUploadMessage('Upload berhasil. Checklist sudah diperbarui dan file tersimpan di Google Drive.', 'success');
-    form.reset();
-    form.elements.year.value = new Date().getFullYear();
-    form.elements.itemKey.value = '';
-    setTimeout(() => refreshDriveStatus(), 1500);
-  } catch (error) {
-    setUploadMessage(`Upload gagal: ${error.message}`, 'error');
-  }
-}
-
-function readFileAsBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
-    reader.onerror = () => reject(new Error('File tidak bisa dibaca.'));
-    reader.readAsDataURL(file);
-  });
-}
-
-function postToAppsScript(payload) {
-  return new Promise((resolve, reject) => {
-    const requestId = `upload_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    const iframeName = `drive-upload-frame-${requestId}`;
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeName;
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    const cleanup = () => {
-      window.removeEventListener('message', onMessage);
-      form.remove();
-      setTimeout(() => iframe.remove(), 500);
-      clearTimeout(timeout);
-    };
-
-    const timeout = setTimeout(() => {
-      cleanup();
-      reject(new Error('Tidak ada respons dari Apps Script. Pastikan Code.gs sudah memakai versi terbaru dan sudah di-deploy ulang.'));
-    }, 45000);
-
-    const onMessage = (event) => {
-      const data = event.data || {};
-      if (data.source !== 'risandi-drive-upload') return;
-      if (data.requestId && data.requestId !== requestId) return;
-      cleanup();
-      resolve(data.payload || data);
-    };
-
-    window.addEventListener('message', onMessage);
-
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = GOOGLE_DRIVE_WEB_APP_URL;
-    form.target = iframeName;
-    form.style.display = 'none';
-
-    Object.entries({ ...payload, requestId }).forEach(([key, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value ?? '';
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-  });
-}
-
-function refreshDriveStatus() {
-  if (!GOOGLE_DRIVE_WEB_APP_URL) {
-    setUploadMessage('Status lokal ditampilkan. Integrasi Google Drive belum aktif karena URL Apps Script belum diisi.', 'error');
-    hydrateUploadedMap();
-    renderEvidenceTable();
-    return;
-  }
-
-  const callbackName = `drivePortfolioCallback_${Date.now()}`;
-  window[callbackName] = (response) => {
-    try {
-      if (response?.success && Array.isArray(response.files)) {
-        const local = getLocalUploadedEvidence();
-        response.files.forEach(file => {
-          const inferredKey = file.itemKey || findChecklistKey(file.category, file.documentTitle);
-          if (inferredKey) {
-            local[inferredKey] = {
-              fileName: file.name,
-              year: file.year || '',
-              category: file.category || '',
-              uploadedAt: file.uploadedAt || file.updatedAt || '',
-              url: file.url || ''
-            };
-          }
-        });
-        saveLocalUploadedEvidence(local);
-        hydrateUploadedMap();
-        renderEvidenceTable();
-        setUploadMessage('Status Google Drive berhasil diperbarui.', 'success');
-      } else {
-        setUploadMessage('Belum bisa membaca status dari Google Drive. Cek deployment Apps Script dan kode folder.', 'error');
-      }
-    } finally {
-      delete window[callbackName];
-      document.querySelector(`#${callbackName}`)?.remove();
-    }
-  };
-
-  const url = new URL(GOOGLE_DRIVE_WEB_APP_URL);
-  url.searchParams.set('action', 'list');
-  url.searchParams.set('callback', callbackName);
-  const script = document.createElement('script');
-  script.id = callbackName;
-  script.src = url.toString();
-  script.onerror = () => {
-    setUploadMessage('Gagal memanggil Apps Script. Pastikan Web App dapat diakses oleh Anyone with the link.', 'error');
-    delete window[callbackName];
-    script.remove();
-  };
-  document.body.appendChild(script);
-}
-
-function findChecklistKey(category, title) {
-  const normalized = String(title || '').trim().toLowerCase();
-  const item = evidenceChecklist.find(row => row.category === category && row.title.trim().toLowerCase() === normalized);
-  return item?.key || '';
-}
-
-function makeEvidenceKey(category, title) {
-  const slug = String(title || 'dokumen')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 70);
-  return `${category}-${slug || Date.now()}`;
-}
-
-initEvidenceVault();
+});
