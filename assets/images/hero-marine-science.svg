@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 950" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b315f"/><stop offset="0.52" stop-color="#0b7fab"/><stop offset="1" stop-color="#021425"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="70%" cy="18%" r="45%"><stop stop-color="#70ecff" stop-opacity=".9"/><stop offset="1" stop-color="#70ecff" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="76" height="76" patternUnits="userSpaceOnUse"><path d="M76 0H0V76" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="1"/></pattern>
+  </defs>
+  <rect width="1600" height="950" fill="url(#sea)"/>
+  <rect width="1600" height="950" fill="url(#grid)"/>
+  <rect width="1600" height="950" fill="url(#sun)"/>
+  <path d="M0 560 C240 500 340 620 560 560 C760 505 940 460 1180 540 C1360 600 1490 570 1600 525 L1600 950 L0 950Z" fill="#063052" opacity=".8"/>
+  <path d="M0 640 C260 600 380 705 620 655 C840 610 1020 590 1250 650 C1410 690 1510 675 1600 630 L1600 950 L0 950Z" fill="#04223d" opacity=".9"/>
+  <g opacity=".85">
+    <path d="M1040 610c45-40 92-38 122 0 30 39 25 103-27 133-51 30-128 14-151-43-12-29 3-64 56-90z" fill="#ff6f61" opacity=".9"/>
+    <path d="M1127 590c25-26 61-30 90-11s42 57 31 89c-12 33-47 51-81 47s-62-30-69-64c-4-20 3-43 29-61z" fill="#f1c66d" opacity=".8"/>
+    <path d="M1230 655c40-24 89-19 118 9s31 73 3 104c-31 33-86 38-125 11-38-26-44-88 4-124z" fill="#22c8dd" opacity=".7"/>
+  </g>
+  <g fill="none" stroke="#dff8fb" stroke-width="4" opacity=".55" stroke-linecap="round">
+    <path d="M900 760c20-80 28-130 8-210"/>
+    <path d="M940 765c6-82 25-151 68-217"/>
+    <path d="M858 762c-1-72-21-130-65-180"/>
+    <path d="M980 780c18-55 57-91 112-114"/>
+  </g>
+  <g fill="#ffffff" opacity=".72">
+    <path d="M770 275c34-20 78-20 112 0-36 36-74 36-112 0z"/>
+    <circle cx="920" cy="272" r="6"/>
+    <path d="M1180 245c38-22 86-22 124 0-40 38-82 38-124 0z"/>
+    <circle cx="1330" cy="242" r="7"/>
+    <path d="M1180 390c26-17 60-17 88 0-28 28-58 28-88 0z" opacity=".55"/>
+  </g>
+  <g opacity=".58" fill="none" stroke="#9bf2ff" stroke-width="2">
+    <path d="M230 235c105-50 220-51 350 6"/>
+    <path d="M240 265c125-42 250-38 365 18"/>
+    <path d="M250 295c100-30 215-31 335 19"/>
+  </g>
+</svg>
