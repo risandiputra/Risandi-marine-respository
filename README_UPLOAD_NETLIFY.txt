@@ -65,10 +65,3 @@ Untuk mengaktifkan upload otomatis ke Google Drive, baca file:
 README_GOOGLE_DRIVE_INTEGRATION.txt
 
 Tanpa setup Apps Script, website tetap bisa berjalan, tetapi fitur upload otomatis ke Google Drive belum aktif.
-
-
-V5 DRIVE READY
-Google Apps Script Web App URL sudah dipasang di script.js.
-Upload folder ini ke Netlify.
-Kode akses arsip dimasukkan di form upload: KeenanKenzie.
-Jangan bagikan kode akses arsip secara publik.

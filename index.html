@@ -43,6 +43,7 @@
           <li><a href="#fokus-riset">Fokus Riset</a></li>
           <li><a href="#publikasi">Publikasi</a></li>
           <li><a href="#berita-riset">Berita Riset</a></li>
+          <li><a href="#portfolio-kinerja">Portofolio Kinerja</a></li>
           <li><a href="#kontak">Kontak</a></li>
         </ul>
       </div>
@@ -244,109 +245,164 @@
     </section>
 
 
-    <section id="portfolio-kinerja" class="section portfolio-section">
+    <section id="portfolio-kinerja" class="section portfolio-section portfolio-drive-section">
       <div class="container">
         <div class="section-heading reveal">
           <p class="eyebrow dark">Portofolio Kinerja</p>
           <h2>Arsip Kinerja Akademik & Bukti Portofolio Dosen</h2>
-          <p>Menu ini disiapkan sebagai pusat ringkasan bukti kinerja akademik untuk mendukung dokumentasi BKD, SISTER, SINTA, rekognisi akademik, dan kebutuhan pengembangan karier dosen. Informasi sensitif tidak ditampilkan terbuka; dokumen lengkap tetap disimpan pada arsip pribadi atau repositori terbatas.</p>
+          <p>Dashboard ini dirancang sebagai ruang arsip digital untuk merapikan bukti kinerja akademik dosen. Setiap bukti dapat dikelompokkan berdasarkan kategori Tri Dharma, tahun, jenis dokumen, status unggah, dan folder Google Drive tujuan.</p>
         </div>
 
-        <div class="portfolio-hero-card reveal">
-          <div class="portfolio-hero-copy">
+        <div class="portfolio-hero-card drive-hero-card reveal">
+          <div class="portfolio-hero-copy drive-hero-copy">
             <p class="eyebrow">Academic Evidence Vault</p>
-            <h3>Portofolio yang Tertata, Aman, dan Siap Dikembangkan</h3>
-            <p>Setiap bukti kinerja dapat dirangkum berdasarkan kategori Tri Dharma, tahun, peran, luaran, dan status dokumen. Struktur ini membantu profil akademik terlihat profesional tanpa membuka dokumen administratif yang bersifat pribadi.</p>
+            <h3>Kelola Bukti Akademik Langsung ke Google Drive</h3>
+            <p>Bagian ini disiapkan agar dokumen portofolio dapat diunggah, dikategorikan, dan dirapikan otomatis ke folder Google Drive. Untuk keamanan, fitur unggah membutuhkan Google Apps Script Web App dan kode akses arsip.</p>
             <div class="portfolio-actions">
-              <a class="btn btn-light" href="#kontak">Ajukan Akses Bukti</a>
-              <a class="btn btn-outline" href="#publikasi">Lihat Publikasi</a>
+              <a class="btn btn-light" href="https://drive.google.com/drive/folders/1vip7Umt05FHs7W9imowff_joqUNXGAmI?hl=ID" target="_blank" rel="noopener">Buka Google Drive</a>
+              <button class="btn btn-outline" type="button" data-open-upload>Tambah Bukti Baru</button>
+              <button class="btn btn-outline" type="button" data-refresh-drive>Refresh Status</button>
+            </div>
+            <p class="drive-note">Folder tujuan utama: Google Drive Portofolio Kinerja. File sensitif tetap tersimpan privat di Drive dan tidak dibuka langsung untuk publik.</p>
+          </div>
+          <div class="portfolio-scoreboard drive-scoreboard" aria-label="Ringkasan status portofolio kinerja">
+            <div><strong id="evidence-total">42</strong><span>Checklist Bukti</span></div>
+            <div><strong id="evidence-uploaded">0</strong><span>Sudah Diunggah</span></div>
+            <div><strong id="evidence-pending">42</strong><span>Belum Lengkap</span></div>
+            <div><strong id="drive-status">Setup</strong><span>Status Integrasi Drive</span></div>
+          </div>
+        </div>
+
+        <div class="drive-setup-card reveal active-drive-card" id="drive-setup-card">
+          <div>
+            <span class="setup-badge">Google Drive Integration Aktif</span>
+            <h3>Upload otomatis ke Google Drive sudah disiapkan</h3>
+            <p>Gunakan tombol <strong>Tambah Bukti Baru</strong>, isi <strong>Kode Akses Arsip</strong>, pilih kategori, lalu upload dokumen. File akan dikirim ke Google Drive dan dirapikan berdasarkan kategori serta tahun melalui Google Apps Script.</p>
+          </div>
+          <div class="setup-actions">
+            <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1vip7Umt05FHs7W9imowff_joqUNXGAmI?hl=ID" target="_blank" rel="noopener">Buka Folder Drive</a>
+            <button class="btn btn-soft" type="button" data-copy-folder-id>Copy Folder ID</button>
+          </div>
+        </div>
+
+        <div class="vault-tabs reveal" aria-label="Kategori portofolio kinerja">
+          <button class="vault-tab active" type="button" data-category="all"><span>🌊</span> Semua Bukti</button>
+          <button class="vault-tab" type="button" data-category="pendidikan"><span>🎓</span> Pendidikan & Pengajaran</button>
+          <button class="vault-tab" type="button" data-category="penelitian"><span>🔬</span> Penelitian & Publikasi</button>
+          <button class="vault-tab" type="button" data-category="pengabdian"><span>🤝</span> Pengabdian</button>
+          <button class="vault-tab" type="button" data-category="penunjang"><span>📌</span> Penunjang</button>
+          <button class="vault-tab" type="button" data-category="rekognisi"><span>🏅</span> Rekognisi</button>
+          <button class="vault-tab" type="button" data-category="hki"><span>📚</span> HKI & Luaran</button>
+          <button class="vault-tab" type="button" data-category="pendukung"><span>🗂️</span> Dokumen Pendukung</button>
+        </div>
+
+        <div class="portfolio-workspace">
+          <aside class="upload-panel reveal" id="upload-panel" aria-label="Form upload bukti portofolio">
+            <div class="panel-head">
+              <span class="panel-icon">⬆️</span>
+              <div>
+                <h3>Tambah / Upload Bukti</h3>
+                <p>Pilih kategori, isi metadata, lalu unggah dokumen. Folder kategori dan tahun akan dibuat otomatis di Google Drive.</p>
+              </div>
+            </div>
+
+            <form id="drive-upload-form" class="drive-upload-form">
+              <label>Kode Akses Arsip *
+                <input type="password" name="accessCode" placeholder="Masukkan kode akses upload" required />
+              </label>
+              <label>Kategori Bukti *
+                <select name="category" required>
+                  <option value="pendidikan">Pendidikan & Pengajaran</option>
+                  <option value="penelitian">Penelitian & Publikasi</option>
+                  <option value="pengabdian">Pengabdian kepada Masyarakat</option>
+                  <option value="penunjang">Penunjang Akademik</option>
+                  <option value="rekognisi">Rekognisi & Prestasi</option>
+                  <option value="hki">HKI, Buku & Luaran Tambahan</option>
+                  <option value="pendukung">Dokumen Pendukung</option>
+                </select>
+              </label>
+              <label>Nama Dokumen / Kegiatan *
+                <input type="text" name="documentTitle" placeholder="Contoh: SK Mengajar Semester Genap" required />
+              </label>
+              <div class="form-row compact-row">
+                <label>Tahun *
+                  <input type="number" name="year" min="2000" max="2100" value="2026" required />
+                </label>
+                <label>Status Bukti *
+                  <select name="documentStatus" required>
+                    <option value="Tersedia">Tersedia</option>
+                    <option value="Perlu Verifikasi">Perlu Verifikasi</option>
+                    <option value="Draft">Draft</option>
+                  </select>
+                </label>
+              </div>
+              <label>Peran / Keterangan
+                <input type="text" name="role" placeholder="Contoh: Dosen pengampu / Ketua peneliti / Narasumber" />
+              </label>
+              <label>Luaran / Bukti
+                <input type="text" name="output" placeholder="Contoh: SK, sertifikat, laporan, artikel, DOI, HKI" />
+              </label>
+              <label>File Dokumen *
+                <input type="file" name="evidenceFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.zip" required />
+              </label>
+              <input type="hidden" name="itemKey" value="" />
+              <button class="btn btn-primary full-width" type="submit">Upload ke Google Drive</button>
+              <p class="upload-message" id="upload-message">Dokumen akan masuk ke folder kategori dan subfolder tahun secara otomatis setelah integrasi Apps Script aktif.</p>
+            </form>
+          </aside>
+
+          <div class="vault-dashboard reveal">
+            <div class="dashboard-toolbar">
+              <div>
+                <h3>Checklist Bukti Portofolio</h3>
+                <p>Gunakan tabel ini untuk memantau status dokumen: <strong>✓ Sudah diupload</strong> atau <strong>Belum diupload</strong>.</p>
+              </div>
+              <div class="toolbar-actions">
+                <input id="evidence-search" type="search" placeholder="Cari dokumen..." />
+                <select id="evidence-year-filter" aria-label="Filter tahun">
+                  <option value="all">Semua Tahun</option>
+                  <option value="2026">2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="vault-table-wrap">
+              <table class="vault-table">
+                <thead>
+                  <tr>
+                    <th>Kategori</th>
+                    <th>Nama Dokumen</th>
+                    <th>Tahun</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="evidence-table-body">
+                  <tr><td colspan="5">Memuat checklist portofolio...</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="portfolio-scoreboard" aria-label="Ringkasan portofolio kinerja">
-            <div><strong>7</strong><span>Kategori Bukti Akademik</span></div>
-            <div><strong>BKD</strong><span>Siap untuk rekap kinerja dosen</span></div>
-            <div><strong>SINTA</strong><span>Terhubung dengan profil publik</span></div>
-            <div><strong>Private</strong><span>Dokumen sensitif tidak dibuka publik</span></div>
-          </div>
         </div>
 
-        <div class="evidence-grid">
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">🎓</div>
-            <h3>Pendidikan & Pengajaran</h3>
-            <p>Ringkasan bukti pelaksanaan pendidikan, pembelajaran, dan aktivitas akademik di kelas maupun laboratorium.</p>
-            <ul>
-              <li>SK mengajar, RPS, bahan ajar, modul, dan rubrik penilaian</li>
-              <li>Pembimbingan, pengujian, seminar, dan aktivitas akademik mahasiswa</li>
-              <li>Pengembangan kurikulum, praktikum, dan inovasi pembelajaran</li>
-            </ul>
-          </article>
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">🔬</div>
-            <h3>Penelitian & Publikasi</h3>
-            <p>Dokumentasi aktivitas riset, publikasi, sitasi, kolaborasi, dan luaran ilmiah yang terindeks.</p>
-            <ul>
-              <li>Artikel jurnal, prosiding, DOI, Scopus, SINTA, dan Google Scholar</li>
-              <li>Hibah penelitian, laporan riset, dataset, dan analisis ilmiah</li>
-              <li>Kolaborasi penelitian nasional maupun internasional</li>
-            </ul>
-          </article>
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">🤝</div>
-            <h3>Pengabdian kepada Masyarakat</h3>
-            <p>Portofolio kegiatan pengabdian berbasis keilmuan, edukasi, pelatihan, dan pendampingan masyarakat pesisir.</p>
-            <ul>
-              <li>SK pengabdian, laporan kegiatan, dokumentasi, dan sertifikat</li>
-              <li>Luaran pengabdian, media, modul pelatihan, dan policy brief</li>
-              <li>Kegiatan pendampingan ekosistem pesisir dan pulau kecil</li>
-            </ul>
-          </article>
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">📌</div>
-            <h3>Penunjang Akademik</h3>
-            <p>Bukti kegiatan penunjang profesi dosen dan kontribusi institusional di lingkungan akademik.</p>
-            <ul>
-              <li>Sertifikat seminar, workshop, pelatihan, dan kepanitiaan</li>
-              <li>Reviewer jurnal, editor, narasumber, dan organisasi profesi</li>
-              <li>Surat tugas, undangan akademik, dan rekognisi kegiatan</li>
-            </ul>
-          </article>
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">🏅</div>
-            <h3>Rekognisi & Prestasi</h3>
-            <p>Catatan pengakuan akademik, kontribusi profesional, dan capaian yang mendukung reputasi keilmuan.</p>
-            <ul>
-              <li>Penghargaan, invited speaker, visiting lecturer, dan keynote</li>
-              <li>Kolaborasi riset, sitasi, indeks akademik, dan media coverage</li>
-              <li>Peran dalam forum ilmiah, asosiasi, dan jejaring profesional</li>
-            </ul>
-          </article>
-          <article class="evidence-card reveal">
-            <div class="evidence-icon">📚</div>
-            <h3>HKI, Buku & Luaran Tambahan</h3>
-            <p>Dokumentasi hak kekayaan intelektual dan luaran akademik lain yang relevan untuk portofolio kinerja.</p>
-            <ul>
-              <li>Hak cipta, paten, buku, book chapter, dan monograf</li>
-              <li>Data, perangkat analisis, model, panduan teknis, dan laporan kebijakan</li>
-              <li>Materi diseminasi ilmiah dan produk berbasis riset</li>
-            </ul>
-          </article>
-        </div>
-
-        <div class="document-vault reveal">
+        <div class="folder-map reveal">
           <div>
-            <h3>Dokumen Pendukung Tersimpan Aman</h3>
-            <p>Website publik menampilkan ringkasan dan status bukti. File asli seperti SK, sertifikat, surat tugas, dan dokumen pangkat sebaiknya disimpan di Google Drive/OneDrive terbatas dengan akses berdasarkan permintaan.</p>
+            <p class="eyebrow dark">Struktur Folder Otomatis</p>
+            <h3>Folder Google Drive akan dirapikan berdasarkan kategori dan tahun</h3>
+            <p>Contoh struktur: <strong>01 Pendidikan dan Pengajaran / 2026 / SK Mengajar Semester Genap.pdf</strong>. Sistem ini membuat arsip lebih siap untuk kebutuhan BKD, SISTER, SINTA, dan portofolio kenaikan jabatan.</p>
           </div>
-          <div class="vault-list" aria-label="Jenis dokumen pendukung">
-            <span>SK</span>
-            <span>Sertifikat</span>
-            <span>Surat Tugas</span>
-            <span>Laporan</span>
-            <span>DOI</span>
-            <span>SINTA</span>
-            <span>Scopus</span>
-            <span>BKD</span>
+          <div class="folder-tree" aria-label="Struktur folder portofolio akademik">
+            <span>📁 Portofolio Kinerja Dosen</span>
+            <span>├── 01 Pendidikan dan Pengajaran</span>
+            <span>├── 02 Penelitian dan Publikasi</span>
+            <span>├── 03 Pengabdian kepada Masyarakat</span>
+            <span>├── 04 Penunjang Akademik</span>
+            <span>├── 05 Rekognisi dan Prestasi</span>
+            <span>├── 06 HKI Buku dan Luaran Tambahan</span>
+            <span>└── 07 Dokumen Pendukung</span>
           </div>
         </div>
       </div>
@@ -365,7 +421,7 @@
             <div class="contact-item"><span>📍</span><div><small>Lokasi & Afiliasi</small><strong>Indonesia</strong><em>Universitas Maritim Raja Ali Haji (UMRAH)</em></div></div>
           </div>
         </div>
-        <form class="contact-form reveal" name="kontak-riset" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/terima-kasih.html">
+        <form class="contact-form reveal" name="kontak-riset" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="terima-kasih.html">
           <input type="hidden" name="form-name" value="kontak-riset" />
           <p class="hidden"><label>Jangan isi kolom ini: <input name="bot-field" /></label></p>
           <h3>Kirim Pesan</h3>
