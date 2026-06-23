@@ -1114,3 +1114,71 @@ textarea { resize: vertical; }
 @media (max-width: 980px) {
   .upload-only-workspace { grid-template-columns: 1fr; }
 }
+
+
+/* ===== V13 content update: journal-based science news + 16:6 infographic gallery ===== */
+.news-card .journal-link,
+.clean-infographic-content .journal-link {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 14px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #eefbff;
+  color: #007fa3;
+  font-weight: 900;
+  font-size: 0.82rem;
+  border: 1px solid rgba(0, 126, 170, 0.16);
+}
+.news-card .journal-link:hover,
+.clean-infographic-content .journal-link:hover { background: #dff8ff; }
+.infographic-format-card { align-items: center; }
+.infographic-format-specs {
+  min-height: 240px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 28px;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(12px);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  padding: 30px;
+}
+.infographic-format-specs span {
+  display: block;
+  font-size: clamp(3.5rem, 7vw, 6.5rem);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.08em;
+}
+.infographic-format-specs small {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255,255,255,0.82);
+  font-weight: 850;
+}
+.infographic-note-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 24px;
+  margin: 24px 0;
+  border-radius: 26px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 126, 170, 0.13);
+  box-shadow: 0 18px 42px rgba(4, 56, 89, 0.08);
+}
+.infographic-note-card span { font-size: 2rem; }
+.infographic-note-card h3 { margin: 0 0 8px; color: var(--navy); }
+.infographic-note-card p { margin: 0; color: var(--muted); }
+.infographic-clean-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 30px; }
+.clean-infographic-card { display: grid; grid-template-columns: 1.08fr 0.92fr; align-items: stretch; }
+.clean-infographic-card .infographic-landscape { border-bottom: 0; border-right: 1px solid rgba(0, 115, 160, 0.10); min-height: 360px; }
+.infographic-landscape img { object-fit: contain; background: #fff; }
+.clean-infographic-content { display: flex; flex-direction: column; justify-content: center; }
+@media (max-width: 980px) {
+  .clean-infographic-card { grid-template-columns: 1fr; }
+  .clean-infographic-card .infographic-landscape { border-right: 0; border-bottom: 1px solid rgba(0, 115, 160, 0.10); min-height: auto; }
+  .infographic-format-specs { min-height: 180px; }
+}

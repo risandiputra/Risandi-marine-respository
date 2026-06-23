@@ -64,34 +64,24 @@ if (metricsBand) counterObserver.observe(metricsBand);
 
 const newsItems = [
   {
-    category: 'Oseanografi',
-    title: 'Arus Permukaan di Estuari Kawal Menunjukkan Variasi Musiman yang Penting bagi Ekosistem Pesisir',
-    body: 'Kajian hidrodinamika di Estuari Kawal, Bintan, membantu menjelaskan bagaimana pola arus permukaan berubah mengikuti musim. Informasi seperti ini penting untuk memahami pergerakan massa air, potensi sebaran material terlarut, dan dinamika lingkungan yang memengaruhi ekosistem pesisir. Ringkasan ini dapat dikembangkan menjadi berita riset yang menjembatani hasil pemodelan ilmiah dengan kebutuhan pengelolaan pesisir.'
+    "category": "Terumbu Karang",
+    "title": "Rahasia Ikan Kepe-Kepe di Ujung Timur Nusantara: Cerita dari Pulau Liki, Bepondi, dan Miossu",
+    "body": "Di jantung Coral Triangle, wilayah yang dikenal sebagai pusat keanekaragaman hayati laut dunia, terdapat pulau-pulau terluar Papua yang menyimpan kekayaan tersembunyi. Penelitian terbaru mengungkap bahwa Pulau Liki, Bepondi, dan Miossu menjadi rumah bagi 30 spesies ikan Kepe-kepe (Chaetodontidae). Ikan yang berwarna-warni ini bukan sekadar penghias terumbu, melainkan indikator penting kesehatan karang. Menariknya, para peneliti menemukan bahwa kelimpahan ikan di tiap pulau tidaklah sama. Pulau Liki dan Miossu memiliki jumlah ikan jauh lebih banyak dibandingkan Pulau Bepondi. Rahasianya terletak pada bentuk pulau; Liki dan Miossu adalah \"Pulau Tinggi\" yang memiliki lereng terumbu yang curam dan kompleks, sehingga menyediakan lebih banyak \"kamar\" atau ceruk bagi ikan untuk tinggal. Sebaliknya, Bepondi yang cenderung datar memiliki variasi habitat yang lebih terbatas. Selain faktor alam, kearifan lokal seperti Sasi—sistem adat yang mengatur waktu penangkapan ikan—terbukti ampuh menjaga populasi ikan ini tetap lestari di tengah ancaman perubahan iklim\n\nSumber publikasi: Butterflyfish (Chaetodontidae) Species in Three Small Outer Islands of Papua, Indonesia (Liki, Bepondi and Miossu)."
   },
   {
-    category: 'Terumbu Karang',
-    title: 'Tutupan Karang Hidup Berperan Penting terhadap Kelimpahan Ikan Kepe-kepe di Pulau Weh',
-    body: 'Famili Chaetodontidae atau ikan kepe-kepe sering digunakan sebagai salah satu indikator ekologi pada ekosistem terumbu karang. Ringkasan ini menyoroti bagaimana tutupan karang hidup berkaitan dengan keanekaragaman dan kelimpahan ikan tersebut di Pulau Weh, Sabang. Pesan utamanya adalah bahwa kondisi habitat bentik berperan penting dalam mendukung komunitas ikan karang.'
+    "category": "Ikan Karang",
+    "title": "Alarm Ekosistem di Pulau Biak: Saat Alga Mulai Mengambil Alih Rumah Karang",
+    "body": "Ekosistem terumbu karang di Pulau Biak, Papua, sedang menghadapi tantangan besar. Berdasarkan survei di 14 titik pengamatan, ditemukan fenomena yang mengkhawatirkan: alga turf (alga pendek yang menutupi karang mati) kini lebih mendominasi dibandingkan karang keras. Rata-rata tutupan alga mencapai 42,1%, sementara karang keras hanya tersisa 26,1%. Kondisi ini ibarat \"rumput liar\" yang mengambil alih kebun; semakin sedikit karang yang hidup, semakin luas alga turf menyebar. Dampaknya sangat serius karena alga ini memerangkap sedimen dan menghalangi bayi-bayi karang untuk menempel dan tumbuh. Dalam kondisi ini, ikan herbivora (pemakan alga) menjadi pahlawan yang sangat krusial. Mereka berperan sebagai \"tukang kebun\" yang memangkas alga agar karang memiliki ruang untuk bernapas dan pulih kembali. Perlindungan terhadap ikan-ikan pemakan alga ini menjadi kunci utama jika kita ingin melihat terumbu karang Biak kembali sehat\n\nSumber publikasi: The Relationship Between Reef Fish and Coverage of Coral and Turf Algae in Coral Reef Ecosystems of Biak Island, Papua."
   },
   {
-    category: 'Ikan Karang',
-    title: 'Hubungan Ikan Karang, Karang, dan Turf Algae Menggambarkan Dinamika Ekosistem Terumbu di Biak',
-    body: 'Ekosistem terumbu karang tidak hanya ditentukan oleh karang hidup, tetapi juga oleh komponen lain seperti turf algae dan komunitas ikan karang. Ringkasan riset ini memperkenalkan cara membaca hubungan antar-komponen ekosistem di Pulau Biak, Papua, sehingga pembaca dapat memahami dinamika habitat dan komunitas ikan dalam konteks kesehatan terumbu.'
+    "category": "Resiliensi Ekosistem",
+    "title": "Ketangguhan Ikan Karang Nias: Bertahan di Tengah Bencana Gempa Hebat",
+    "body": "Gempa bumi dahsyat yang mengguncang Kepulauan Nias pada tahun 2005 tidak hanya mengubah peta geologi, tetapi juga mengangkat dasar laut setinggi 1 hingga 2 meter. Akibatnya, banyak terumbu karang yang terangkat ke permukaan dan mati seketika; tutupan karang hidup pun anjlok drastis dari 48,45% menjadi hanya 20,45%. Namun, ada kabar mengejutkan dari dunia bawah laut: kelimpahan ikan terumbu karang ternyata tidak menunjukkan penurunan yang signifikan secara statistik. Meski rumah mereka rusak berat, komunitas ikan menunjukkan tingkat resiliensi atau ketangguhan yang luar biasa. Kelompok ikan herbivora segera mengambil peran penting pasca-bencana dengan membersihkan karang-karang mati dari lumut, sehingga membantu proses pemulihan ekosistem secara alami. Fenomena di Nias ini mengajarkan kita bahwa alam memiliki mekanisme pemulihan yang kuat, asalkan populasi ikan fungsionalnya tetap dijaga dari tekanan manusia\n\nSumber publikasi: Reef fish resilience following a significant earthquake disaster in the Nias Islands, Indonesia."
   },
   {
-    category: 'Resiliensi Ekosistem',
-    title: 'Terumbu Karang dan Ikan Karang di Kepulauan Nias Menunjukkan Ketahanan Pasca Gempa Besar',
-    body: 'Bencana gempa dapat mengubah struktur habitat laut dan memengaruhi komunitas ikan karang. Ringkasan populer ini menjelaskan bagaimana penelitian di Kepulauan Nias menilai resiliensi ikan karang setelah gempa signifikan. Tema ini penting karena menunjukkan bahwa pemantauan pascabencana perlu mencakup respons biologis dan kondisi habitat secara bersamaan.'
-  },
-  {
-    category: 'Rekrutmen Karang',
-    title: 'Sebaran Karang Muda di Pesisir dan Pulau-Pulau Kecil Sumatra Mengungkap Potensi Pemulihan Terumbu',
-    body: 'Karang muda atau juvenile coral merupakan indikator penting untuk memahami proses regenerasi terumbu. Ringkasan ini membahas bagaimana pola sebaran spasial juvenile coral di pesisir dan pulau-pulau kecil Sumatra dapat memberikan gambaran awal tentang potensi pemulihan ekosistem terumbu karang setelah tekanan lingkungan.'
-  },
-  {
-    category: 'Kesehatan Terumbu',
-    title: 'Indeks Kesehatan Terumbu Karang Pengudang Menjadi Dasar Penting Pengelolaan Ekosistem Bintan',
-    body: 'Coral Reef Health Index membantu menyederhanakan informasi ekologi yang kompleks menjadi indikator yang lebih mudah dipakai dalam pemantauan dan pengelolaan. Ringkasan ini menyoroti pentingnya indeks kesehatan terumbu di kawasan Pengudang, Bintan, sebagai dasar komunikasi ilmiah untuk konservasi, pemantauan, dan kebijakan pesisir.'
+    "category": "Urban Reef Ecology",
+    "title": "\"Ecological Decoupling\" di Kepulauan Seribu: Mengapa Dekat Jakarta Ikannya Berbeda?",
+    "body": "Sebuah studi mendalam di Kepulauan Seribu mengungkap fenomena unik yang disebut \"Ecological Decoupling\" atau ketidaksinkronan ekologis. Umumnya, kita berpikir bahwa semakin banyak karang, semakin banyak pula ikan yang ada. Namun, di pulau-pulau yang dekat dengan Jakarta, asumsi ini tidak sepenuhnya berlaku. Meskipun beberapa lokasi dekat Jakarta memiliki tutupan karang yang cukup tinggi (didominasi jenis Acropora yang tumbuh cepat), mereka gagal mendukung kelimpahan ikan spesialis seperti ikan korallivora (pemakan karang). Hal ini terjadi karena tekanan polusi dan sedimentasi yang kronis dari megacity Jakarta mengganggu keseimbangan alami. Sebaliknya, semakin jauh jarak pulau dari Teluk Jakarta, jumlah ikan korallivora meningkat secara signifikan karena lingkungan yang lebih bersih dan stabil. Penelitian ini menekankan bahwa untuk menyelamatkan Kepulauan Seribu, kita tidak bisa hanya fokus pada penanaman karang, tetapi juga harus secara serius mengatasi polusi dari daratan.\n\nSumber publikasi: Spatial variation in coral reef condition and reef fish assemblages along a proximity to Jakarta Bay, Indonesia."
   }
 ];
 
@@ -140,7 +130,7 @@ document.addEventListener('keydown', event => {
 });
 
 
-// ===== Enhancement v11: Infografis Science filters only =====
+// ===== V13: Science News + Infografis content update =====
 document.querySelectorAll('.science-filter').forEach(button => {
   button.addEventListener('click', () => {
     document.querySelectorAll('.science-filter').forEach(el => el.classList.remove('active'));
